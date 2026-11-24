@@ -1,0 +1,168 @@
+=== 1. GET /health (200 OK) ===
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 38
+ETag: W/"26-G5LxOYyjFUYa+WPP6EvZ1P788Mo"
+Date: Tue, 24 Nov 2026 18:48:04 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"status":"ok","database":"connected"}
+
+=== 2. POST /api/links — автоматичний код (201 Created) ===
+HTTP/1.1 201 Created
+X-Powered-By: Express
+Location: /api/links/PdWLkZ
+Content-Type: application/json; charset=utf-8
+Content-Length: 172
+ETag: W/"ac-5YZukILCt1dhKjb48QgA2IZMGrs"
+Date: Tue, 24 Nov 2026 18:48:06 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"code":"PdWLkZ","shortUrl":"http://localhost:8080/PdWLkZ","originalUrl":"https://lnu.edu.ua/about/faculties/electronics","clicks":0,"createdAt":"2026-11-24T18:48:06.950Z"}
+
+=== 3. POST /api/links — власний alias 'electronics' (201 Created) ===
+HTTP/1.1 201 Created
+X-Powered-By: Express
+Location: /api/links/electronics
+Content-Type: application/json; charset=utf-8
+Content-Length: 167
+ETag: W/"a7-6/SOv/IYDXSk8aa2qj/x6Wrg2H0"
+Date: Tue, 24 Nov 2026 18:48:07 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"code":"electronics","shortUrl":"http://localhost:8080/electronics","originalUrl":"https://electronics.lnu.edu.ua/","clicks":0,"createdAt":"2026-11-24T18:48:07.045Z"}
+
+=== 4. POST /api/links — дублікат alias (409 Conflict) ===
+HTTP/1.1 409 Conflict
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 105
+ETag: W/"69-QwlYdUvw3Mdq+xpJmcX1ijYm2kM"
+Date: Tue, 24 Nov 2026 18:48:07 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"error":{"code":"ALIAS_TAKEN","message":"Код 'electronics' уже використовується"}}
+
+=== 5. POST /api/links — некоректний URL (400 Bad Request) ===
+HTTP/1.1 400 Bad Request
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 209
+ETag: W/"d1-HSWc0Ypn8cCqli66gIdd7dsl7vQ"
+Date: Tue, 24 Nov 2026 18:48:07 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"error":{"code":"INVALID_URL","message":"Надана адреса має некоректний формат або непідтримуваний протокол (дозволено лише http/https)"}}
+
+=== 6. POST /api/links — невалідний alias (400 Bad Request) ===
+HTTP/1.1 400 Bad Request
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 215
+ETag: W/"d7-2bs3Q3hDqxuqsaHhcPgQ0GuZfdU"
+Date: Tue, 24 Nov 2026 18:48:07 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"error":{"code":"INVALID_ALIAS","message":"Alias має містити 3–32 символи (латинські літери, цифри, _ або -) та не бути зарезервованим словом"}}
+
+=== 7. POST /api/links — пошкоджений JSON (400 Bad Request) ===
+HTTP/1.1 400 Bad Request
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 117
+ETag: W/"75-VJPlKxSMUGTFmi/PcW1p0ujsTn8"
+Date: Tue, 24 Nov 2026 18:48:07 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"error":{"code":"INVALID_JSON","message":"Некоректний синтаксис JSON у тілі запиту"}}
+
+=== 8. GET /electronics — редирект та інкремент clicks (302 Found) ===
+HTTP/1.1 302 Found
+X-Powered-By: Express
+Location: https://electronics.lnu.edu.ua/
+Vary: Accept
+Content-Type: text/plain; charset=utf-8
+Content-Length: 53
+Date: Tue, 24 Nov 2026 18:48:07 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+Found. Redirecting to https://electronics.lnu.edu.ua/
+
+=== 9. GET /api/links/electronics — перевірка лічильника clicks=1 (200 OK) ===
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 167
+ETag: W/"a7-pnSzAVriNRDwdz45yHIqg2zJJMw"
+Date: Tue, 24 Nov 2026 18:48:07 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"code":"electronics","shortUrl":"http://localhost:8080/electronics","originalUrl":"https://electronics.lnu.edu.ua/","clicks":1,"createdAt":"2026-11-24T18:48:07.045Z"}
+
+=== 10. GET /api/links — список усіх посилань (200 OK) ===
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 342
+ETag: W/"156-z3e8N3HNWzej4zEkjZ+YdTwgl+w"
+Date: Tue, 24 Nov 2026 18:48:07 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+[{"code":"electronics","shortUrl":"http://localhost:8080/electronics","originalUrl":"https://electronics.lnu.edu.ua/","clicks":1,"createdAt":"2026-11-24T18:48:07.045Z"},{"code":"PdWLkZ","shortUrl":"http://localhost:8080/PdWLkZ","originalUrl":"https://lnu.edu.ua/about/faculties/electronics","clicks":0,"createdAt":"2026-11-24T18:48:06.950Z"}]
+
+=== 11. PATCH /api/links/electronics — оновлення цільової адреси (200 OK) ===
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 155
+ETag: W/"9b-qheCu0JNkafklThS+/IuR5DiO7g"
+Date: Tue, 24 Nov 2026 18:48:07 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"code":"electronics","shortUrl":"http://localhost:8080/electronics","originalUrl":"https://lnu.edu.ua/","clicks":1,"createdAt":"2026-11-24T18:48:07.045Z"}
+
+=== 12. DELETE /api/links/electronics — видалення посилання (204 No Content) ===
+HTTP/1.1 204 No Content
+X-Powered-By: Express
+Date: Tue, 24 Nov 2026 18:48:07 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+
+
+=== 13. GET /api/links/electronics — запит видаленого ресурсу (404 Not Found) ===
+HTTP/1.1 404 Not Found
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 119
+ETag: W/"77-jbSIiMaH1ZFLhyQNouzssNx1SqA"
+Date: Tue, 24 Nov 2026 18:48:07 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"error":{"code":"LINK_NOT_FOUND","message":"Посилання з вказаним кодом не знайдено"}}
+
+=== 14. GET /nonexistent — редирект неіснуючого коду (404 Not Found) ===
+HTTP/1.1 404 Not Found
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 103
+ETag: W/"67-3CjMCXGyADJAfPa/xjPS2Fyftwo"
+Date: Tue, 24 Nov 2026 18:48:08 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"error":{"code":"LINK_NOT_FOUND","message":"Коротке посилання не знайдено"}}
+
